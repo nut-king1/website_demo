@@ -13,7 +13,7 @@
       --bg:        #0e0e0e;
       --surface:   #161616;
       --border:    #2a2a2a;
-      --accent:    #c8f060;
+      --accent:    #73b478;
       --accent2:   #60c8f0;
       --text:      #e8e4dc;
       --muted:     #7a7670;
@@ -32,6 +32,14 @@
       font-size: 14px;
       line-height: 1.7;
       overflow-x: hidden;
+    }
+    body::before {
+      content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 60px 60px;
+      opacity: 0.35;
     }
 
     /* ── SCROLLBAR ── */
@@ -93,19 +101,19 @@
 
     /* ── HERO ── */
     #hero {
-      min-height: 100vh; display: flex; flex-direction: column;
-      justify-content: center; padding-top: 5rem; position: relative; overflow: hidden;
+      min-height: 100vh; display: flex; flex-direction: row;
+      align-items: center; justify-content: space-between;
+      padding-top: 5rem; position: relative; overflow: hidden; gap: 2rem;
     }
-    .hero-grid-bg {
-      position: absolute; inset: 0; pointer-events: none;
-      background-image:
-        linear-gradient(var(--border) 1px, transparent 1px),
-        linear-gradient(90deg, var(--border) 1px, transparent 1px);
-      background-size: 60px 60px;
-      mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 30%, transparent 100%);
-      opacity: 0.35;
+    .hero-content { flex: 1; min-width: 0; }
+    .hero-photo {
+      flex-shrink: 0; width: clamp(180px, 22vw, 300px);
+      aspect-ratio: 3/4; border: 1px solid var(--border); border-radius: var(--radius);
+      overflow: hidden; position: relative;
+      animation: fadeUp 0.6s 0.4s ease both;
     }
-    .hero-tag {
+    .hero-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.hero-tag {
       display: inline-block; border: 1px solid var(--border);
       padding: 0.3rem 0.8rem; font-size: 0.72rem; letter-spacing: 0.12em;
       color: var(--muted); margin-bottom: 1.8rem; border-radius: var(--radius);
@@ -117,6 +125,7 @@
       animation: fadeUp 0.6s 0.1s ease both;
     }
     .hero-name em { font-style: italic; color: var(--accent); }
+    #typed-title, .hero-name .cursor { font-size: clamp(1.5rem, 4vw, 3.25rem); }
     .hero-sub {
       font-size: 0.95rem; color: var(--muted); max-width: 520px;
       margin-bottom: 2.5rem; animation: fadeUp 0.6s 0.2s ease both;
@@ -147,24 +156,28 @@
     }
 
     /* ── ABOUT ── */
-    #about { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
-    .about-photo {
-      aspect-ratio: 3/4; background: var(--surface);
-      border: 1px solid var(--border); border-radius: var(--radius);
-      display: flex; align-items: center; justify-content: center;
-      color: var(--muted); font-size: 0.75rem; letter-spacing: 0.1em;
-      position: relative; overflow: hidden;
-    }
-    .about-photo::before {
-      content: ''; position: absolute; inset: 0;
-      background: linear-gradient(135deg, rgba(200,240,96,0.06), transparent 60%);
-    }
+    #about { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
     .about-text h2 { font-family: var(--serif); font-size: 2.5rem; margin-bottom: 1.2rem; line-height: 1.2; }
     .about-text p { color: var(--muted); margin-bottom: 1rem; }
     .about-facts { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1.5rem; }
     .fact { display: flex; gap: 1rem; font-size: 0.8rem; }
     .fact-key { color: var(--accent); min-width: 80px; }
     .fact-val { color: var(--muted); }
+
+    /* ── SKILLS ── */
+    .skills-panel { display: flex; flex-direction: column; gap: 1.8rem; }
+    .skill-group-label {
+      font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 0.7rem;
+    }
+    .skill-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .skill-tag {
+      font-size: 0.72rem; letter-spacing: 0.06em; padding: 0.35rem 0.75rem;
+      border: 1px solid var(--border); border-radius: var(--radius);
+      color: var(--text); background: var(--surface);
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .skill-tag:hover { border-color: var(--accent); color: var(--accent); }
 
     /* ── PROJECTS ── */
     #projects h2 { font-family: var(--serif); font-size: 2.5rem; margin-bottom: 0.5rem; }
@@ -199,45 +212,20 @@
     }
     .project-link:hover { color: var(--accent); }
 
-    /* ── SKILLS ── */
-    #skills { background: none; }
-    #skills h2 { font-family: var(--serif); font-size: 2.5rem; margin-bottom: 0.5rem; }
-    #skills .section-sub { color: var(--muted); margin-bottom: 3rem; }
-    .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
-    .skill-group { border: 1px solid var(--border); padding: 1.5rem; }
-    .skill-group-title {
-      font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase;
-      color: var(--accent2); margin-bottom: 1rem;
+/* ── FOOTER ── */
+    footer {
+      padding: 2.5rem 2.5rem; color: var(--muted);
+      font-size: 0.7rem; letter-spacing: 0.1em; border-top: 1px solid var(--border);
+      display: flex; flex-direction: column; align-items: center; gap: 1.2rem;
     }
-    .skill-list { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-    .skill-pill {
-      font-size: 0.75rem; padding: 0.3rem 0.7rem;
-      background: var(--bg); border: 1px solid var(--border);
-      border-radius: var(--radius); color: var(--text);
-    }
-
-    /* ── CONTACT ── */
-    #contact {
-      text-align: center;
-      border-top: 1px solid var(--border);
-    }
-    #contact h2 { font-family: var(--serif); font-size: clamp(2rem, 5vw, 4rem); margin-bottom: 1rem; }
-    #contact h2 em { color: var(--accent); font-style: italic; }
-    #contact p { color: var(--muted); max-width: 420px; margin: 0 auto 2.5rem; }
-    .contact-links { display: flex; justify-content: center; flex-wrap: wrap; gap: 1rem; }
-    .contact-link {
-      display: flex; align-items: center; gap: 0.5rem; padding: 0.7rem 1.4rem;
-      border: 1px solid var(--border); color: var(--text); text-decoration: none;
-      font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase;
+    .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; }
+    .footer-link {
+      display: flex; align-items: center; gap: 0.4rem; padding: 0.5rem 1rem;
+      border: 1px solid var(--border); color: var(--muted); text-decoration: none;
+      font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
       border-radius: var(--radius); transition: 0.2s;
     }
-    .contact-link:hover { border-color: var(--accent); color: var(--accent); }
-
-    /* ── FOOTER ── */
-    footer {
-      text-align: center; padding: 2rem; color: var(--muted);
-      font-size: 0.7rem; letter-spacing: 0.1em; border-top: 1px solid var(--border);
-    }
+    .footer-link:hover { border-color: var(--accent); color: var(--accent); }
 
     /* ── FADE-IN ON SCROLL ── */
     .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
@@ -248,6 +236,17 @@
       from { opacity: 0; transform: translateY(20px); }
       to   { opacity: 1; transform: none; }
     }
+    .cursor {
+      display: inline-block;
+      color: var(--accent);
+      animation: blink 0.75s step-end infinite;
+      font-weight: 300;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0; }
+    }
+
     @keyframes scrollPulse {
       0%, 100% { opacity: 0.4; transform: scaleY(1); }
       50%       { opacity: 1;   transform: scaleY(1.1); }
@@ -259,8 +258,9 @@
       .nav-links { display: none; }
       .hamburger { display: flex; }
       section { padding: 4rem 1.5rem; }
+      #hero { flex-direction: column-reverse; gap: 2rem; justify-content: center; }
+      .hero-photo { width: 100%; max-width: 280px; aspect-ratio: 3/4; align-self: center; }
       #about { grid-template-columns: 1fr; }
-      .about-photo { aspect-ratio: 4/3; }
     }
   </style>
 </head>
@@ -268,12 +268,10 @@
 
 <!-- NAV -->
 <nav id="navbar">
-  <a href="#hero" class="nav-logo">YN.</a>
+  <a href="#hero" class="nav-logo">JLW.</a>
   <ul class="nav-links">
     <li><a href="#about">About</a></li>
     <li><a href="#projects">Projects</a></li>
-    <li><a href="#skills">Skills</a></li>
-    <li><a href="#contact">Contact</a></li>
   </ul>
   <button class="hamburger" id="hamburger" aria-label="Menu">
     <span></span><span></span><span></span>
@@ -284,37 +282,63 @@
 <div class="mobile-menu" id="mobileMenu">
   <a href="#about" class="mobile-link">About</a>
   <a href="#projects" class="mobile-link">Projects</a>
-  <a href="#skills" class="mobile-link">Skills</a>
-  <a href="#contact" class="mobile-link">Contact</a>
 </div>
 
 <!-- HERO -->
 <section id="hero">
-  <div class="hero-grid-bg"></div>
-  <span class="hero-tag">Open to opportunities</span>
-  <h1 class="hero-name">Your <em>Name</em><br>Engineer.</h1>
-  <p class="hero-sub">I build reliable, well-crafted software — from backend systems to user-facing interfaces. Based in Montreal.</p>
-  <div class="hero-cta">
-    <a href="#projects" class="btn btn-primary">View Projects</a>
-    <a href="#contact" class="btn btn-secondary">Get in Touch</a>
+  <div class="hero-content">
+    <h1 class="hero-name">Hey, I'm <em>Jia Lin</em><br><span id="typed-title"></span><span class="cursor">|</span></h1>
+    <p class="hero-sub">I build reliable, well-crafted software — from backend systems to user-facing interfaces. Based in Montreal.</p>
+    <div class="hero-cta">
+      <a href="#projects" class="btn btn-primary">View Projects</a>
+    </div>
   </div>
-  <div class="hero-scroll">
-    <div class="scroll-line"></div>
-    Scroll
+  <div class="hero-photo">
+    <img src="IMG_0473.jpg" alt="Jia Lin Wan">
   </div>
 </section>
 
 <!-- ABOUT -->
 <section id="about">
-  <div class="about-photo reveal">
-    <!-- Replace with: <img src="assets/images/photo.jpg" alt="Your Name" style="width:100%;height:100%;object-fit:cover;"> -->
-    [ your photo ]
+  <div class="skills-panel reveal">
+    <p class="label">Skills &amp; Tools</p>
+    <div>
+      <p class="skill-group-label">Languages</p>
+      <div class="skill-tags">
+        <span class="skill-tag">Python</span>
+        <span class="skill-tag">C++</span>
+        <span class="skill-tag">JavaScript</span>
+        <span class="skill-tag">SQL</span>
+        <span class="skill-tag">MATLAB</span>
+      </div>
+    </div>
+    <div>
+      <p class="skill-group-label">Frameworks &amp; Libraries</p>
+      <div class="skill-tags">
+        <span class="skill-tag">FastAPI</span>
+        <span class="skill-tag">React</span>
+        <span class="skill-tag">Node.js</span>
+        <span class="skill-tag">NumPy</span>
+        <span class="skill-tag">Pandas</span>
+      </div>
+    </div>
+    <div>
+      <p class="skill-group-label">Tools &amp; Platforms</p>
+      <div class="skill-tags">
+        <span class="skill-tag">Git</span>
+        <span class="skill-tag">Docker</span>
+        <span class="skill-tag">AWS</span>
+        <span class="skill-tag">PostgreSQL</span>
+        <span class="skill-tag">Linux</span>
+        <span class="skill-tag">SolidWorks</span>
+      </div>
+    </div>
   </div>
   <div class="about-text reveal">
     <p class="label">About</p>
     <h2>Building things that <em>work.</em></h2>
-    <p>I'm a software / [mechanical / electrical / civil] engineer with a passion for solving real problems with clean, maintainable solutions. I care about the details — both in code and in design.</p>
-    <p>When I'm not engineering, I'm [your hobby, e.g., hiking, playing chess, tinkering with hardware].</p>
+    <p>I'm a mechanical engineer with a passion for solving real problems with clean, maintainable solutions. I care about the details — both in code and in design.</p>
+    <p>When I'm not engineering, you can find me in nature. I love hiking!</p>
     <div class="about-facts">
       <div class="fact"><span class="fact-key">Based</span><span class="fact-val">Montreal, QC</span></div>
       <div class="fact"><span class="fact-key">Degree</span><span class="fact-val">B.Eng. [Your Program], [Your University]</span></div>
@@ -372,72 +396,46 @@
   </div>
 </section>
 
-<!-- SKILLS -->
-<section id="skills">
-  <p class="label reveal">Toolbox</p>
-  <h2 class="reveal">Skills & Tools</h2>
-  <p class="section-sub reveal">Technologies I'm comfortable shipping with.</p>
-  <div class="skills-grid">
-    <div class="skill-group reveal">
-      <p class="skill-group-title">Languages</p>
-      <div class="skill-list">
-        <span class="skill-pill">Python</span>
-        <span class="skill-pill">JavaScript</span>
-        <span class="skill-pill">C++</span>
-        <span class="skill-pill">SQL</span>
-        <span class="skill-pill">Bash</span>
-      </div>
-    </div>
-    <div class="skill-group reveal">
-      <p class="skill-group-title">Frameworks</p>
-      <div class="skill-list">
-        <span class="skill-pill">React</span>
-        <span class="skill-pill">FastAPI</span>
-        <span class="skill-pill">Node.js</span>
-        <span class="skill-pill">Express</span>
-      </div>
-    </div>
-    <div class="skill-group reveal">
-      <p class="skill-group-title">Tools & Infra</p>
-      <div class="skill-list">
-        <span class="skill-pill">Git</span>
-        <span class="skill-pill">Docker</span>
-        <span class="skill-pill">Linux</span>
-        <span class="skill-pill">AWS</span>
-        <span class="skill-pill">CI/CD</span>
-      </div>
-    </div>
-    <div class="skill-group reveal">
-      <p class="skill-group-title">Other</p>
-      <div class="skill-list">
-        <span class="skill-pill">REST APIs</span>
-        <span class="skill-pill">PostgreSQL</span>
-        <span class="skill-pill">Figma</span>
-        <span class="skill-pill">MATLAB</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- CONTACT -->
-<section id="contact">
-  <p class="label reveal">Contact</p>
-  <h2 class="reveal">Let's <em>build</em><br>something.</h2>
-  <p class="reveal">I'm currently open to full-time roles and interesting project collaborations. My inbox is always open.</p>
-  <div class="contact-links reveal">
-    <a href="mailto:you@email.com" class="contact-link">✉ Email</a>
-    <a href="https://github.com/yourusername" target="_blank" class="contact-link">⌥ GitHub</a>
-    <a href="https://linkedin.com/in/yourusername" target="_blank" class="contact-link">in LinkedIn</a>
-    <a href="assets/resume.pdf" target="_blank" class="contact-link">↓ Resume</a>
-  </div>
-</section>
-
 <!-- FOOTER -->
 <footer>
-  <p>Designed & built by Your Name — 2025</p>
+  <div class="footer-links">
+    <a href="mailto:nicolaswan1008@gmail.com" class="footer-link">✉ Email</a>
+    <a href="https://github.com/nut-king1" target="_blank" class="footer-link">⌥ GitHub</a>
+    <a href="https://www.linkedin.com/in/nicolas-wan-0a22112b7/" target="_blank" class="footer-link">in LinkedIn</a>
+    <a href="assets/resume.pdf" target="_blank" class="footer-link">↓ Resume</a>
+  </div>
+  <p>2026© Jia Lin Wan</p>
 </footer>
 
 <script>
+  // Typewriter effect
+  const titles = ['Engineer.', 'Builder.', 'Problem Solver.', 'Developer.', 'Creator.'];
+  const typedEl = document.getElementById('typed-title');
+  let titleIndex = 0, charIndex = 0, deleting = false;
+
+  function type() {
+    const current = titles[titleIndex];
+    if (!deleting) {
+      typedEl.textContent = current.slice(0, ++charIndex);
+      if (charIndex === current.length) {
+        deleting = true;
+        setTimeout(type, 1800);
+        return;
+      }
+    } else {
+      typedEl.textContent = current.slice(0, --charIndex);
+      if (charIndex === 0) {
+        deleting = false;
+        titleIndex = (titleIndex + 1) % titles.length;
+        setTimeout(type, 400);
+        return;
+      }
+    }
+    setTimeout(type, deleting ? 60 : 95);
+  }
+
+  setTimeout(type, 800);
+
   // Nav scroll style
   const nav = document.getElementById('navbar');
   window.addEventListener('scroll', () => {
