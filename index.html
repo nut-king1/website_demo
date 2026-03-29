@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your Name — Engineer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0e0e0e;
+      --surface:   #161616;
+      --border:    #2a2a2a;
+      --accent:    #c8f060;
+      --accent2:   #60c8f0;
+      --text:      #e8e4dc;
+      --muted:     #7a7670;
+      --serif:     'DM Serif Display', Georgia, serif;
+      --mono:      'DM Mono', 'Courier New', monospace;
+      --radius:    4px;
+      --max:       1100px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 14px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.2rem 2.5rem;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s, background 0.3s;
+    }
+    nav.scrolled {
+      background: rgba(14,14,14,0.92);
+      backdrop-filter: blur(12px);
+      border-color: var(--border);
+    }
+    .nav-logo {
+      font-family: var(--serif); font-size: 1.1rem;
+      color: var(--accent); text-decoration: none; letter-spacing: 0.02em;
+    }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      color: var(--muted); text-decoration: none; font-size: 0.78rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+
+    /* hamburger */
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
+    .hamburger span { display: block; width: 22px; height: 1.5px; background: var(--text); transition: 0.3s; }
+    .hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+    .mobile-menu {
+      display: none; position: fixed; inset: 0; background: var(--bg);
+      z-index: 99; flex-direction: column; justify-content: center;
+      align-items: center; gap: 2.5rem;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      font-family: var(--serif); font-size: 2rem; color: var(--text);
+      text-decoration: none; transition: color 0.2s;
+    }
+    .mobile-menu a:hover { color: var(--accent); }
+
+    /* ── SECTIONS ── */
+    section { padding: 6rem 2.5rem; max-width: var(--max); margin: 0 auto; }
+
+    .label {
+      font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 1rem;
+    }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh; display: flex; flex-direction: column;
+      justify-content: center; padding-top: 5rem; position: relative; overflow: hidden;
+    }
+    .hero-grid-bg {
+      position: absolute; inset: 0; pointer-events: none;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 30%, transparent 100%);
+      opacity: 0.35;
+    }
+    .hero-tag {
+      display: inline-block; border: 1px solid var(--border);
+      padding: 0.3rem 0.8rem; font-size: 0.72rem; letter-spacing: 0.12em;
+      color: var(--muted); margin-bottom: 1.8rem; border-radius: var(--radius);
+      animation: fadeUp 0.6s ease both;
+    }
+    .hero-name {
+      font-family: var(--serif); font-size: clamp(3rem, 8vw, 6.5rem);
+      line-height: 1.05; margin-bottom: 1.2rem; position: relative;
+      animation: fadeUp 0.6s 0.1s ease both;
+    }
+    .hero-name em { font-style: italic; color: var(--accent); }
+    .hero-sub {
+      font-size: 0.95rem; color: var(--muted); max-width: 520px;
+      margin-bottom: 2.5rem; animation: fadeUp 0.6s 0.2s ease both;
+    }
+    .hero-cta { display: flex; gap: 1rem; flex-wrap: wrap; animation: fadeUp 0.6s 0.3s ease both; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.75rem 1.6rem; font-family: var(--mono); font-size: 0.78rem;
+      letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none;
+      border-radius: var(--radius); cursor: pointer; transition: 0.2s; border: 1px solid;
+    }
+    .btn-primary {
+      background: var(--accent); color: var(--bg); border-color: var(--accent);
+    }
+    .btn-primary:hover { background: transparent; color: var(--accent); }
+    .btn-secondary { background: transparent; color: var(--text); border-color: var(--border); }
+    .btn-secondary:hover { border-color: var(--text); }
+
+    .hero-scroll {
+      position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 0.4rem;
+      color: var(--muted); font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase;
+      animation: fadeUp 0.6s 0.5s ease both;
+    }
+    .scroll-line {
+      width: 1px; height: 48px; background: linear-gradient(var(--muted), transparent);
+      animation: scrollPulse 1.8s ease-in-out infinite;
+    }
+
+    /* ── ABOUT ── */
+    #about { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+    .about-photo {
+      aspect-ratio: 3/4; background: var(--surface);
+      border: 1px solid var(--border); border-radius: var(--radius);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--muted); font-size: 0.75rem; letter-spacing: 0.1em;
+      position: relative; overflow: hidden;
+    }
+    .about-photo::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(200,240,96,0.06), transparent 60%);
+    }
+    .about-text h2 { font-family: var(--serif); font-size: 2.5rem; margin-bottom: 1.2rem; line-height: 1.2; }
+    .about-text p { color: var(--muted); margin-bottom: 1rem; }
+    .about-facts { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1.5rem; }
+    .fact { display: flex; gap: 1rem; font-size: 0.8rem; }
+    .fact-key { color: var(--accent); min-width: 80px; }
+    .fact-val { color: var(--muted); }
+
+    /* ── PROJECTS ── */
+    #projects h2 { font-family: var(--serif); font-size: 2.5rem; margin-bottom: 0.5rem; }
+    #projects .section-sub { color: var(--muted); margin-bottom: 3rem; max-width: 480px; }
+    .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5px; }
+    .project-card {
+      background: var(--surface); padding: 2rem;
+      border: 1px solid var(--border); position: relative;
+      transition: border-color 0.2s, transform 0.2s; cursor: default;
+      overflow: hidden;
+    }
+    .project-card::after {
+      content: ''; position: absolute; bottom: 0; left: 0;
+      height: 2px; width: 0; background: var(--accent);
+      transition: width 0.3s ease;
+    }
+    .project-card:hover { border-color: var(--border); transform: translateY(-2px); }
+    .project-card:hover::after { width: 100%; }
+    .project-num { font-size: 0.65rem; color: var(--muted); letter-spacing: 0.12em; margin-bottom: 1.2rem; }
+    .project-title { font-family: var(--serif); font-size: 1.4rem; margin-bottom: 0.8rem; }
+    .project-desc { color: var(--muted); font-size: 0.82rem; margin-bottom: 1.5rem; line-height: 1.7; }
+    .project-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.5rem; }
+    .tag {
+      font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.2rem 0.6rem; border: 1px solid var(--border); border-radius: 2px;
+      color: var(--muted);
+    }
+    .project-links { display: flex; gap: 1rem; }
+    .project-link {
+      font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--text); text-decoration: none; transition: color 0.2s;
+    }
+    .project-link:hover { color: var(--accent); }
+
+    /* ── SKILLS ── */
+    #skills { background: none; }
+    #skills h2 { font-family: var(--serif); font-size: 2.5rem; margin-bottom: 0.5rem; }
+    #skills .section-sub { color: var(--muted); margin-bottom: 3rem; }
+    .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+    .skill-group { border: 1px solid var(--border); padding: 1.5rem; }
+    .skill-group-title {
+      font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--accent2); margin-bottom: 1rem;
+    }
+    .skill-list { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .skill-pill {
+      font-size: 0.75rem; padding: 0.3rem 0.7rem;
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--radius); color: var(--text);
+    }
+
+    /* ── CONTACT ── */
+    #contact {
+      text-align: center;
+      border-top: 1px solid var(--border);
+    }
+    #contact h2 { font-family: var(--serif); font-size: clamp(2rem, 5vw, 4rem); margin-bottom: 1rem; }
+    #contact h2 em { color: var(--accent); font-style: italic; }
+    #contact p { color: var(--muted); max-width: 420px; margin: 0 auto 2.5rem; }
+    .contact-links { display: flex; justify-content: center; flex-wrap: wrap; gap: 1rem; }
+    .contact-link {
+      display: flex; align-items: center; gap: 0.5rem; padding: 0.7rem 1.4rem;
+      border: 1px solid var(--border); color: var(--text); text-decoration: none;
+      font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase;
+      border-radius: var(--radius); transition: 0.2s;
+    }
+    .contact-link:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center; padding: 2rem; color: var(--muted);
+      font-size: 0.7rem; letter-spacing: 0.1em; border-top: 1px solid var(--border);
+    }
+
+    /* ── FADE-IN ON SCROLL ── */
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: none; }
+    }
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.4; transform: scaleY(1); }
+      50%       { opacity: 1;   transform: scaleY(1.1); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      section { padding: 4rem 1.5rem; }
+      #about { grid-template-columns: 1fr; }
+      .about-photo { aspect-ratio: 4/3; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#hero" class="nav-logo">YN.</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#about" class="mobile-link">About</a>
+  <a href="#projects" class="mobile-link">Projects</a>
+  <a href="#skills" class="mobile-link">Skills</a>
+  <a href="#contact" class="mobile-link">Contact</a>
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-grid-bg"></div>
+  <span class="hero-tag">Open to opportunities</span>
+  <h1 class="hero-name">Your <em>Name</em><br>Engineer.</h1>
+  <p class="hero-sub">I build reliable, well-crafted software — from backend systems to user-facing interfaces. Based in Montreal.</p>
+  <div class="hero-cta">
+    <a href="#projects" class="btn btn-primary">View Projects</a>
+    <a href="#contact" class="btn btn-secondary">Get in Touch</a>
+  </div>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    Scroll
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-photo reveal">
+    <!-- Replace with: <img src="assets/images/photo.jpg" alt="Your Name" style="width:100%;height:100%;object-fit:cover;"> -->
+    [ your photo ]
+  </div>
+  <div class="about-text reveal">
+    <p class="label">About</p>
+    <h2>Building things that <em>work.</em></h2>
+    <p>I'm a software / [mechanical / electrical / civil] engineer with a passion for solving real problems with clean, maintainable solutions. I care about the details — both in code and in design.</p>
+    <p>When I'm not engineering, I'm [your hobby, e.g., hiking, playing chess, tinkering with hardware].</p>
+    <div class="about-facts">
+      <div class="fact"><span class="fact-key">Based</span><span class="fact-val">Montreal, QC</span></div>
+      <div class="fact"><span class="fact-key">Degree</span><span class="fact-val">B.Eng. [Your Program], [Your University]</span></div>
+      <div class="fact"><span class="fact-key">Focus</span><span class="fact-val">Backend, Systems, [Your Area]</span></div>
+      <div class="fact"><span class="fact-key">Status</span><span class="fact-val">Seeking full-time roles</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <p class="label reveal">Work</p>
+  <h2 class="reveal">Selected Projects</h2>
+  <p class="section-sub reveal">A handful of things I've built — click through for source code and live demos.</p>
+  <div class="projects-grid">
+
+    <div class="project-card reveal">
+      <p class="project-num">01</p>
+      <h3 class="project-title">Project Alpha</h3>
+      <p class="project-desc">A short description of what this project does, the problem it solves, and why it matters. Keep it to 2–3 sentences.</p>
+      <div class="project-tags">
+        <span class="tag">Python</span><span class="tag">FastAPI</span><span class="tag">PostgreSQL</span>
+      </div>
+      <div class="project-links">
+        <a href="#" class="project-link">GitHub ↗</a>
+        <a href="#" class="project-link">Live Demo ↗</a>
+      </div>
+    </div>
+
+    <div class="project-card reveal">
+      <p class="project-num">02</p>
+      <h3 class="project-title">Project Beta</h3>
+      <p class="project-desc">Describe the technical challenge here and what makes your solution interesting. Mention scale, performance, or a clever design choice.</p>
+      <div class="project-tags">
+        <span class="tag">React</span><span class="tag">Node.js</span><span class="tag">AWS</span>
+      </div>
+      <div class="project-links">
+        <a href="#" class="project-link">GitHub ↗</a>
+        <a href="#" class="project-link">Case Study ↗</a>
+      </div>
+    </div>
+
+    <div class="project-card reveal">
+      <p class="project-num">03</p>
+      <h3 class="project-title">Project Gamma</h3>
+      <p class="project-desc">Hardware, embedded, or research? Describe the domain and your contribution. What did you learn? What would you do differently?</p>
+      <div class="project-tags">
+        <span class="tag">C++</span><span class="tag">Arduino</span><span class="tag">CAD</span>
+      </div>
+      <div class="project-links">
+        <a href="#" class="project-link">GitHub ↗</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <p class="label reveal">Toolbox</p>
+  <h2 class="reveal">Skills & Tools</h2>
+  <p class="section-sub reveal">Technologies I'm comfortable shipping with.</p>
+  <div class="skills-grid">
+    <div class="skill-group reveal">
+      <p class="skill-group-title">Languages</p>
+      <div class="skill-list">
+        <span class="skill-pill">Python</span>
+        <span class="skill-pill">JavaScript</span>
+        <span class="skill-pill">C++</span>
+        <span class="skill-pill">SQL</span>
+        <span class="skill-pill">Bash</span>
+      </div>
+    </div>
+    <div class="skill-group reveal">
+      <p class="skill-group-title">Frameworks</p>
+      <div class="skill-list">
+        <span class="skill-pill">React</span>
+        <span class="skill-pill">FastAPI</span>
+        <span class="skill-pill">Node.js</span>
+        <span class="skill-pill">Express</span>
+      </div>
+    </div>
+    <div class="skill-group reveal">
+      <p class="skill-group-title">Tools & Infra</p>
+      <div class="skill-list">
+        <span class="skill-pill">Git</span>
+        <span class="skill-pill">Docker</span>
+        <span class="skill-pill">Linux</span>
+        <span class="skill-pill">AWS</span>
+        <span class="skill-pill">CI/CD</span>
+      </div>
+    </div>
+    <div class="skill-group reveal">
+      <p class="skill-group-title">Other</p>
+      <div class="skill-list">
+        <span class="skill-pill">REST APIs</span>
+        <span class="skill-pill">PostgreSQL</span>
+        <span class="skill-pill">Figma</span>
+        <span class="skill-pill">MATLAB</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <p class="label reveal">Contact</p>
+  <h2 class="reveal">Let's <em>build</em><br>something.</h2>
+  <p class="reveal">I'm currently open to full-time roles and interesting project collaborations. My inbox is always open.</p>
+  <div class="contact-links reveal">
+    <a href="mailto:you@email.com" class="contact-link">✉ Email</a>
+    <a href="https://github.com/yourusername" target="_blank" class="contact-link">⌥ GitHub</a>
+    <a href="https://linkedin.com/in/yourusername" target="_blank" class="contact-link">in LinkedIn</a>
+    <a href="assets/resume.pdf" target="_blank" class="contact-link">↓ Resume</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>Designed & built by Your Name — 2025</p>
+</footer>
+
+<script>
+  // Nav scroll style
+  const nav = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 40);
+  });
+
+  // Hamburger menu
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('open');
+    mobileMenu.classList.toggle('open');
+  });
+  document.querySelectorAll('.mobile-link').forEach(link => {
+    link.addEventListener('click', () => {
+      hamburger.classList.remove('open');
+      mobileMenu.classList.remove('open');
+    });
+  });
+
+  // Reveal on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
